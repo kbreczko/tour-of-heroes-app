@@ -14,5 +14,5 @@ script:
 deploy:
   provider: heroku
   api_key:
-    secure: ${API-KEY}
+    secure: $HEROKU_AUTH_TOKEN
     app: tour-of-heroes

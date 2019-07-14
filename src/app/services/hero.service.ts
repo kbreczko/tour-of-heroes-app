@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Hero} from "../models/hero";
-import {HEROES} from "../helpers/mock-heroes";
 import {Observable, of} from 'rxjs';
 import {MessageService} from "./message.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -33,6 +32,24 @@ export class HeroService {
     );
   }
 
+  updateHero (hero: Hero): Observable<any> {
+    const httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
+
+    return this.http.put(this.heroesUrl, hero, httpOptions).pipe(
+      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
+  }
+
+  addHero (hero: Hero): Observable<Hero> {
+    const httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
+
+    return this.http.post<Hero>(this.heroesUrl, hero, httpOptions).pipe(
+      tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+      catchError(this.handleError<Hero>('addHero'))
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
@@ -43,15 +60,6 @@ export class HeroService {
 
   private log(message: string) {
     this.messageService.add(`HeroService: ${message}`);
-  }
-
-  updateHero (hero: Hero): Observable<any> {
-    const httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
-
-    return this.http.put(this.heroesUrl, hero, httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<any>('updateHero'))
-    );
   }
 
 }
